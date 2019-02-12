@@ -12,3 +12,4 @@ ActiveRecord::Base.logger = Logger.new(STDOUT)
 require_all '../app'
 
 require_relative 'api_key'
+require_relative '../bin/api_query'
