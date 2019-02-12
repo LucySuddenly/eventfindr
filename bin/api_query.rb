@@ -16,9 +16,9 @@ def get_events_for_city_and_date
     name = event_hash["name"]
     date = event_hash["dates"]["start"]["localDate"]
     url = event_hash["url"]
-    price_range = "Prices range from #{event_hash["priceRanges"][0]["min"]} to #{event_hash["priceRanges"][0]["max"]}."
-
-    Event.new(:name => name, :date => date, :url => url, :price_range => price_range)
+    price_range = "Prices range from $#{event_hash["priceRanges"][0]["min"]} USD to $#{event_hash["priceRanges"][0]["max"]} USD."
+    #binding.pry
+    Event.create(:name => name, :date => date, :url => url, :price_range => price_range)
     binding.pry
     #def Event (name, date, url, price_range)
   end
