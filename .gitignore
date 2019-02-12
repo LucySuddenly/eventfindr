@@ -1,3 +1,4 @@
 *.sqlite
 db/schema.rb
 Gemfile.lock
+config/api_key.rb
