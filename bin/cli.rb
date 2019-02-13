@@ -11,7 +11,7 @@ class CLI
   def initialize
     puts "Initializing new CLI"
   end
-
+  
   def main_menu
     puts "Choose an option: "
     puts "1. City & Date"

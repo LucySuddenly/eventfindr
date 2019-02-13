@@ -4,8 +4,7 @@ class CreateEvent < ActiveRecord::Migration[5.2]
       t.integer :venue_id
       t.integer :attraction_id
       t.string :name
-      t.string :price_range
-      t.datetime :date 
+      t.datetime :date
       t.string :url
     end
   end

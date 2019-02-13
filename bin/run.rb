@@ -9,5 +9,6 @@ require_relative "./cli.rb"
 
 
 # Here's some example code:
+
 cli = CLI.new
 cli.main_menu
