@@ -19,11 +19,12 @@ class CLI
     Venue.destroy_all
     Attraction.destroy_all
     puts "Choose an option: "
+    puts "-----------------"
     puts "1. City & Date"
     puts "2. Artist & City"
     puts "3. What's going onsale soon (by city)"
     puts "4. I'm feeling Lucky tonight (by city)"
-    puts "5. exit"
+    puts "5. Exit"
     input = get_user_input
     if input == "1"
       get_events_for_city_and_date

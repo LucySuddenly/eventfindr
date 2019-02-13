@@ -66,5 +66,10 @@ def onsale_soon_by_city
 end
 
 def im_feeling_lucky_tonight
-
+  puts "Which city?"
+  city = get_user_input
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
+  response_hash = JSON.parse(response_string)
+  json_iterator_convert_to_objects(response_hash)
+  #Event.all[rand(0..Event.all.count - 1)]
 end
