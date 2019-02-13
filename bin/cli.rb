@@ -9,9 +9,11 @@
 class CLI
 
   def initialize
-    puts "Initializing new CLI"
+    puts "Welcome to EventFindr"
+    puts
   end
   
+
   def main_menu
     puts "Choose an option: "
     puts "1. City & Date"
@@ -20,6 +22,8 @@ class CLI
     input = get_user_input
     if input == "1"
       get_events_for_city_and_date
+    elsif input == '2'
+      get_events_for_artist_and_city
     end
     #Code that filters based on input
     return self.main_menu
