@@ -44,6 +44,7 @@ def get_events_for_city_and_date
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
+  binding.pry
 end
 
 def get_events_for_artist_and_city
@@ -62,7 +63,6 @@ def onsale_soon_by_city
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
-  binding.pry
 end
 
 def im_feeling_lucky_tonight
