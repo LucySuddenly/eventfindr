@@ -16,9 +16,21 @@ def get_events_for_city_and_date
     venue_name = event_hash["_embedded"]["venues"][0]["name"]
     venue_address = "#{event_hash["_embedded"]["venues"][0]["address"]["line1"]}, #{event_hash["_embedded"]["venues"][0]["city"]["name"]}, #{event_hash["_embedded"]["venues"][0]["state"]["stateCode"]} #{event_hash["_embedded"]["venues"][0]["postalCode"]}"
     venue_city = event_hash["_embedded"]["venues"][0]["city"]["name"]
+    begin
+      attraction_name = event_hash["_embedded"]["attractions"][0]["name"]
+    rescue NoMethodError
+      attraction_name = event_name
+    end
+
+    begin
+      attraction_genre = event_hash["_embedded"]["attractions"][0]["classifications"][0]["genre"]["name"]
+    rescue NoMethodError
+      attraction_genre = "Genre is not listed."
+    end
+
     #binding.pry
     Venue.create(:name => venue_name, :address => venue_address, :city => venue_city) #name, address, city
-    Attraction.create() #name, genre
+    Attraction.create(:name => attraction_name, :genre => attraction_genre)
     Event.create(:name => event_name, :date => event_date, :url => event_url)
   end
   binding.pry
