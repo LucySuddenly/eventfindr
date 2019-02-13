@@ -3,22 +3,33 @@ require 'json'
 require 'pry'
 
 def display_output
+  puts
   Event.all.each_with_index do |event, index|
     puts "#{(index + 1)}. #{event.name} (#{event.event_time})"
   end
+  puts
 end
 
 def display_output_with_date
+  puts
   Event.all.each_with_index do |event, index|
     puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]}, #{event.event_time})"
   end
+  puts
 end
 
 def get_detailed_info
-  puts "Select the number of an event to purchase tickets."
+  puts "Select the number of an event for more information."
   input = get_user_input
   Event.all[input.to_i - 1]
 end
+
+def get_detailed_info_for_presales
+  puts "Select the number of an event for onsale information."
+  input = get_user_input
+  Event.all[input.to_i - 1]
+end
+
 
 def launch_url(event)
   Launchy.open(event.url)
@@ -26,8 +37,11 @@ end
 
 def check_if_no_results(response_hash)
   if response_hash["page"]["totalElements"] == 0
-    puts "No search results, please try again."
     puts
+    puts "No search results."
+    puts
+    puts "Press enter to return to main menu."
+    gets
     self.main_menu
   end
 end
@@ -50,19 +64,27 @@ end
 
 def assuring_venue_is_unique(event_hash)
   #check to see if DB contains venue, else create it
-  if Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
-    Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
-  else
-    Venue.create(:name => event_hash["_embedded"]["venues"][0]["name"], :address => "#{event_hash["_embedded"]["venues"][0]["address"]["line1"]}, #{event_hash["_embedded"]["venues"][0]["city"]["name"]}, #{event_hash["_embedded"]["venues"][0]["state"]["stateCode"]} #{event_hash["_embedded"]["venues"][0]["postalCode"]}", :city => event_hash["_embedded"]["venues"][0]["city"]["name"])
+  begin
+    if Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
+      Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
+    else
+      Venue.create(:name => event_hash["_embedded"]["venues"][0]["name"], :address => "#{event_hash["_embedded"]["venues"][0]["address"]["line1"]}, #{event_hash["_embedded"]["venues"][0]["city"]["name"]}, #{event_hash["_embedded"]["venues"][0]["state"]["stateCode"]} #{event_hash["_embedded"]["venues"][0]["postalCode"]}", :city => event_hash["_embedded"]["venues"][0]["city"]["name"])
+    end
+  rescue NoMethodError
+    Venue.create(:name => "Unlisted")
   end
 end
 
 def assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
   #check to see if DB contains attraction, else create it
-  if Attraction.find_by(:name => attraction_name)
-    Attraction.find_by(:name => attraction_name)
-  else
-    Attraction.create(:name => attraction_name, :genre => attraction_genre)
+  begin
+    if Attraction.find_by(:name => attraction_name)
+      Attraction.find_by(:name => attraction_name)
+    else
+      Attraction.create(:name => attraction_name, :genre => attraction_genre)
+    end
+  rescue NoMethodError
+    Attraction.create(:name => "Unlisted")
   end
 end
 
@@ -109,8 +131,8 @@ def get_events_for_city_and_date(city, date)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output
-  input = get_detailed_info
-  launch_url(input)
+  event = get_detailed_info
+  event_info(event)
 end
 
 def get_events_for_artist_and_city(artist, city)
@@ -118,8 +140,8 @@ def get_events_for_artist_and_city(artist, city)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
-  input = get_detailed_info
-  launch_url(input)
+  event = get_detailed_info
+  event_info(event)
 end
 
 def onsale_soon_by_city(city)
@@ -127,8 +149,8 @@ def onsale_soon_by_city(city)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
-  input = get_detailed_info
-  launch_url(input)
+  event = get_detailed_info_for_presales
+  event_info(event)
 end
 
 def im_feeling_lucky_tonight(city)

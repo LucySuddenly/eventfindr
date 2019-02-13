@@ -10,8 +10,7 @@ class CLI
 
   def initialize
     puts
-    puts "Welcome to EventFindr"
-    puts
+    puts "Welcome to ..."
   end
 
 
@@ -19,14 +18,18 @@ class CLI
     Event.destroy_all
     Venue.destroy_all
     Attraction.destroy_all
-    puts "Choose an option: "
-    puts "-----------------"
-    puts "1. City & Date"
-    puts "2. Artist & City"
-    puts "3. What's going onsale soon (by city)"
-    puts "4. I'm feeling Lucky tonight (by city)"
+    puts
+    puts "EVENTFINDR"
+    puts
+    puts "Available Search Options"
+    puts "-----------------------------------------"
+    puts "1. Find events by city & date."
+    puts "2. Find events by performer & city."
+    puts "3. What tickets go onsale soon near me?"
+    puts "4. Pick an event for me to attend tonight!"
     puts "5. Exit"
     puts
+    puts "Enter your selection:"
     input = get_user_input
     if input == "1"
       puts "Which city?"
@@ -35,25 +38,52 @@ class CLI
       date = get_user_input
       get_events_for_city_and_date(city, date)
     elsif input == '2'
-      puts "Which artist?"
+      puts "Which performer?"
       artist = get_user_input
       puts "Which city?"
       city = get_user_input
       get_events_for_artist_and_city(artist, city)
     elsif input == '3'
-      puts "Which city?"
+      puts "In which city are you located?"
       city = get_user_input
       onsale_soon_by_city(city)
     elsif input == '4'
-      puts "Which city?"
+      puts "In which city are you located?"
       city = get_user_input
       im_feeling_lucky_tonight(city)
     elsif input == '5'
-      #todo
+    exit
     end
     return self.main_menu
   end
 
+  def event_info(event)
+    puts
+    puts "Event Info:"
+    puts "---------------------------"
+    puts "Event Name: #{event.name}"
+    puts " Performer: #{event.attraction.name}"
+    puts "     Genre: #{event.attraction.genre}"
+    puts "      Date: #{event.date.to_s[0..9]}"
+    puts "      Time: #{event.event_time}"
+    puts "     Venue: #{event.venue.name}"
+    puts "   Address: #{event.venue.address}"
+    puts
+    puts "Available Options:"
+    # puts "----------------------------"
+    puts "1. Open browser to see ticket availability and pricing."
+    puts "2. Go back to main menu."
+    puts
+    puts "Enter your selection:"
+    input = get_user_input
+    if input == "1"
+      launch_url(event)
+    elsif input == "2"
+      self.main_menu
+    else
+
+    end
+  end
 
 
   def get_user_input
