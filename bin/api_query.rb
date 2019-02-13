@@ -29,9 +29,12 @@ def get_events_for_city_and_date
     end
 
     #binding.pry
-    Venue.create(:name => venue_name, :address => venue_address, :city => venue_city) #name, address, city
-    Attraction.create(:name => attraction_name, :genre => attraction_genre)
-    Event.create(:name => event_name, :date => event_date, :url => event_url)
+    a = Venue.create(:name => venue_name, :address => venue_address, :city => venue_city) #name, address, city
+    b = Attraction.create(:name => attraction_name, :genre => attraction_genre)
+    c = Event.create(:name => event_name, :date => event_date, :url => event_url)
+    c.venue = a
+    c.attraction = b
+    c.save
   end
   binding.pry
 end
