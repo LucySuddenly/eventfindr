@@ -4,13 +4,13 @@ require 'pry'
 
 def display_output
   Event.all.each_with_index do |event, index|
-    puts "#{(index + 1)}. #{event.name}"
+    puts "#{(index + 1)}. #{event.name} (#{event.event_time})"
   end
 end
 
 def display_output_with_date
   Event.all.each_with_index do |event, index|
-    puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]})"
+    puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]} #{event.event_time})"
   end
 end
 
@@ -67,7 +67,23 @@ def assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
 end
 
 def create_event(event_hash)
-  Event.create(:name => event_hash["name"], :date => event_hash["dates"]["start"]["localDate"], :url => event_hash["url"])
+  time = fix_time(event_hash["dates"]["start"]["localTime"])
+  Event.create(:name => event_hash["name"], :date => event_hash["dates"]["start"]["localDate"], :url => event_hash["url"], :event_time => time)
+end
+
+def fix_time(time)
+  begin
+    time = time.split(':')
+    time[0] = time[0].to_i
+    if time[0] > 12
+      time[0] = time[0] - 12
+      return "#{time[0]}:#{time[1]} PM"
+    else
+      "#{time[0]}:#{time[1]} AM"
+    end
+  rescue NoMethodError
+    time = "No time listed."
+  end
 end
 
 def assign_relationships(a, b, c)
@@ -77,15 +93,15 @@ def assign_relationships(a, b, c)
 end
 
 def convert_json_data_to_ruby_objects(response_hash)
-    check_if_no_results(response_hash)
-      response_hash["_embedded"]["events"].each do |event_hash|
-        attraction_name = attraction_name_rescue(event_hash)
-        attraction_genre = attraction_genre_rescue(event_hash)
-        a = assuring_venue_is_unique(event_hash)
-        b = assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
-        c = create_event(event_hash)
-        assign_relationships(a, b ,c)
-    end
+  check_if_no_results(response_hash)
+  response_hash["_embedded"]["events"].each do |event_hash|
+    attraction_name = attraction_name_rescue(event_hash)
+    attraction_genre = attraction_genre_rescue(event_hash)
+    a = assuring_venue_is_unique(event_hash)
+    b = assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
+    c = create_event(event_hash)
+    assign_relationships(a, b ,c)
+  end
 end
 
 def get_events_for_city_and_date(city, date)
@@ -98,7 +114,7 @@ def get_events_for_city_and_date(city, date)
 end
 
 def get_events_for_artist_and_city(artist, city)
-  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&keyword=' + artist )
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=25&keyword=' + artist )
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
@@ -107,7 +123,7 @@ def get_events_for_artist_and_city(artist, city)
 end
 
 def onsale_soon_by_city(city)
-  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=25&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
@@ -116,7 +132,7 @@ def onsale_soon_by_city(city)
 end
 
 def im_feeling_lucky_tonight(city)
-  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=25&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   launch_url(Event.all[rand(0..Event.all.count - 1)])

@@ -9,8 +9,8 @@
 class CLI
 
   def initialize
+    puts
     puts "Welcome to EventFindr"
-    puts 
     puts
   end
 
@@ -51,7 +51,6 @@ class CLI
     elsif input == '5'
       #todo
     end
-    #Code that filters based on input
     return self.main_menu
   end
 

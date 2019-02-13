@@ -6,6 +6,7 @@ class CreateEvent < ActiveRecord::Migration[5.2]
       t.string :name
       t.datetime :date
       t.string :url
+      t.string :event_time
     end
   end
 end
