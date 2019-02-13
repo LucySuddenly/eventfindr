@@ -2,6 +2,24 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
+def display_output
+  Event.all.each_with_index do |event, index|
+    puts "#{(index + 1)}. #{event.name}"
+  end
+end
+
+def display_output_with_date
+  Event.all.each_with_index do |event, index|
+    puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]})"
+  end
+end
+
+def get_detailed_info
+  puts "Select the number of an event to purchase tickets."
+  input = get_user_input
+  Launchy.open(Event.all[input.to_i - 1].url)
+end
+
 def json_iterator_convert_to_objects(response_hash)
     if response_hash["page"]["totalElements"] == 0
       puts "No search results, please try again."
@@ -44,7 +62,8 @@ def get_events_for_city_and_date
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
-  binding.pry
+  display_output
+  get_detailed_info
 end
 
 def get_events_for_artist_and_city
@@ -55,6 +74,8 @@ def get_events_for_artist_and_city
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&keyword=' + artist )
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
+  display_output_with_date
+  get_detailed_info
 end
 
 def onsale_soon_by_city
@@ -63,6 +84,8 @@ def onsale_soon_by_city
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
+  display_output_with_date
+  get_detailed_info
 end
 
 def im_feeling_lucky_tonight

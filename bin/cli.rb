@@ -25,6 +25,7 @@ class CLI
     puts "3. What's going onsale soon (by city)"
     puts "4. I'm feeling Lucky tonight (by city)"
     puts "5. Exit"
+    puts
     input = get_user_input
     if input == "1"
       get_events_for_city_and_date
