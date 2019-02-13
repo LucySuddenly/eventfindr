@@ -58,11 +58,7 @@ end
 
 
 
-def get_events_for_city_and_date
-  puts "Which city?"
-  city = get_user_input
-  puts "What date? (yyyy-mm-dd)"
-  date = get_user_input
+def get_events_for_city_and_date(city, date)
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
@@ -71,11 +67,7 @@ def get_events_for_city_and_date
   launch_url(input)
 end
 
-def get_events_for_artist_and_city
-  puts "Which artist?"
-  artist = get_user_input
-  puts "Which city?"
-  city = get_user_input
+def get_events_for_artist_and_city(artist, city)
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&keyword=' + artist )
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
@@ -84,9 +76,7 @@ def get_events_for_artist_and_city
   launch_url(input)
 end
 
-def onsale_soon_by_city
-  puts "Which city?"
-  city = get_user_input
+def onsale_soon_by_city(city)
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
@@ -96,8 +86,6 @@ def onsale_soon_by_city
 end
 
 def im_feeling_lucky_tonight
-  puts "Which city?"
-  city = get_user_input
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)

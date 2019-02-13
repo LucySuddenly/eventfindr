@@ -28,13 +28,25 @@ class CLI
     puts
     input = get_user_input
     if input == "1"
-      get_events_for_city_and_date
+      puts "Which city?"
+      city = get_user_input
+      puts "What date? (yyyy-mm-dd)"
+      date = get_user_input
+      get_events_for_city_and_date(city, date)
     elsif input == '2'
-      get_events_for_artist_and_city
+      puts "Which artist?"
+      artist = get_user_input
+      puts "Which city?"
+      city = get_user_input
+      get_events_for_artist_and_city(artist, city)
     elsif input == '3'
-      onsale_soon_by_city
+      puts "Which city?"
+      city = get_user_input
+      onsale_soon_by_city(city)
     elsif input == '4'
-      im_feeling_lucky_tonight
+      puts "Which city?"
+      city = get_user_input
+      im_feeling_lucky_tonight(city)
     elsif input == '5'
       #todo
     end
