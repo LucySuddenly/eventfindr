@@ -17,7 +17,11 @@ end
 def get_detailed_info
   puts "Select the number of an event to purchase tickets."
   input = get_user_input
-  Launchy.open(Event.all[input.to_i - 1].url)
+  Event.all[input.to_i - 1]
+end
+
+def launch_url(event)
+  Launchy.open(event.url)
 end
 
 def json_iterator_convert_to_objects(response_hash)
@@ -63,7 +67,8 @@ def get_events_for_city_and_date
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
   display_output
-  get_detailed_info
+  input = get_detailed_info
+  launch_url(input)
 end
 
 def get_events_for_artist_and_city
@@ -75,7 +80,8 @@ def get_events_for_artist_and_city
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
   display_output_with_date
-  get_detailed_info
+  input = get_detailed_info
+  launch_url(input)
 end
 
 def onsale_soon_by_city
@@ -85,7 +91,8 @@ def onsale_soon_by_city
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
   display_output_with_date
-  get_detailed_info
+  input = get_detailed_info
+  launch_url(input)
 end
 
 def im_feeling_lucky_tonight
@@ -94,5 +101,5 @@ def im_feeling_lucky_tonight
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
-  #Event.all[rand(0..Event.all.count - 1)]
+  launch_url(Event.all[rand(0..Event.all.count - 1)])
 end
