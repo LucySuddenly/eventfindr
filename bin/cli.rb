@@ -12,18 +12,20 @@ class CLI
     puts "Welcome to EventFindr"
     puts
   end
-  
+
 
   def main_menu
     puts "Choose an option: "
     puts "1. City & Date"
     puts "2. Artist & City"
-    puts "3. Venue"
+    puts "3. What's going onsale soon (by city)"
     input = get_user_input
     if input == "1"
       get_events_for_city_and_date
     elsif input == '2'
       get_events_for_artist_and_city
+    elsif input == '3'
+      onsale_soon_by_city
     end
     #Code that filters based on input
     return self.main_menu

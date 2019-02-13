@@ -5,7 +5,7 @@ require 'pry'
 def json_iterator_convert_to_objects(response_hash)
     if response_hash["page"]["totalElements"] == 0
       puts "No search results, please try again."
-      puts 
+      puts
       self.main_menu
     else
       response_hash["_embedded"]["events"].each do |event_hash|
@@ -39,13 +39,6 @@ end
 def get_events_for_city_and_date
   puts "Which city?"
   city = get_user_input
-  city = city.downcase
-  city = city.split(' ')
-  if city[-1] == 'city'
-    city = city[-2]
-  else
-    city = city[-1]
-  end
   puts "What date? (yyyy-mm-dd)"
   date = get_user_input
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
@@ -56,10 +49,22 @@ end
 def get_events_for_artist_and_city
   puts "Which artist?"
   artist = get_user_input
-    #operate on artist to make camelCase
   puts "Which city?"
   city = get_user_input
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&keyword=' + artist )
   response_hash = JSON.parse(response_string)
   json_iterator_convert_to_objects(response_hash)
+end
+
+def onsale_soon_by_city
+  puts "Which city?"
+  city = get_user_input
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&sort=onSaleStartDate,asc&onsaleOnAfterStartDate=' + DateTime.now.to_s[0..9])
+  response_hash = JSON.parse(response_string)
+  json_iterator_convert_to_objects(response_hash)
+  binding.pry
+end
+
+def im_feeling_lucky_tonight
+
 end
