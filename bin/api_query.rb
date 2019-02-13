@@ -10,7 +10,7 @@ end
 
 def display_output_with_date
   Event.all.each_with_index do |event, index|
-    puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]} #{event.event_time})"
+    puts "#{(index + 1)}. #{event.name} (#{event.date.to_s[0..9]}, #{event.event_time})"
   end
 end
 
@@ -79,10 +79,10 @@ def fix_time(time)
       time[0] = time[0] - 12
       return "#{time[0]}:#{time[1]} PM"
     else
-      "#{time[0]}:#{time[1]} AM"
+      return "#{time[0]}:#{time[1]} AM"
     end
   rescue NoMethodError
-    time = "No time listed."
+    "No time listed."
   end
 end
 
