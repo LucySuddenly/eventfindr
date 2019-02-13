@@ -24,20 +24,35 @@ def launch_url(event)
   Launchy.open(event.url)
 end
 
+def check_if_no_results(response_hash)
+  if response_hash["page"]["totalElements"] == 0
+    puts "No search results, please try again."
+    puts
+    self.main_menu
+  end
+end
+
+def attraction_name_rescue(event_hash)
+  begin
+    event_hash["_embedded"]["attractions"][0]["name"]
+  rescue NoMethodError
+    event_hash["name"]
+  end
+end
+
+def attraction_genre_rescue(event_hash)
+  begin
+    event_hash["_embedded"]["attractions"][0]["classifications"][0]["genre"]["name"]
+  rescue NoMethodError
+    "Genre is not listed."
+  end
+end
+
 def json_iterator_convert_to_objects(response_hash)
-    if response_hash["page"]["totalElements"] == 0
-      puts "No search results, please try again."
-      puts
-      self.main_menu
-    else
+    check_if_no_results(response_hash)
       response_hash["_embedded"]["events"].each do |event_hash|
-        begin
-          attraction_name = event_hash["_embedded"]["attractions"][0]["name"]
-          attraction_genre = event_hash["_embedded"]["attractions"][0]["classifications"][0]["genre"]["name"]
-        rescue NoMethodError
-          attraction_name = event_hash["name"]
-          attraction_genre = "Genre is not listed."
-        end
+        attraction_name = attraction_name_rescue(event_hash)
+        attraction_genre = attraction_genre_rescue(event_hash)
         if a = Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
           #do nothing
         else
@@ -52,7 +67,6 @@ def json_iterator_convert_to_objects(response_hash)
         c.venue = a
         c.attraction = b
         c.save
-      end
     end
 end
 
