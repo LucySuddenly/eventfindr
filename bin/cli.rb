@@ -10,6 +10,7 @@ class CLI
 
   def initialize
     puts "Welcome to EventFindr"
+    puts 
     puts
   end
 
