@@ -53,6 +53,9 @@ class CLI
       im_feeling_lucky_tonight(city)
     elsif input == '5'
     exit
+    else
+      puts "Invalid entry, please press enter to try again."
+      gets
     end
     return self.main_menu
   end
@@ -81,7 +84,9 @@ class CLI
     elsif input == "2"
       self.main_menu
     else
-
+      puts "Invalid entry, please press enter to try again."
+      gets
+      self.event_info(event)
     end
   end
 
