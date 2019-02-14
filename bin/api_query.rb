@@ -123,7 +123,7 @@ def convert_json_data_to_ruby_objects(response_hash)
 end
 
 def get_events_for_city_and_date(city, date)
-  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=50&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
+  response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=25&localStartDateTime=' + date + 'T00:00:00,' + date + 'T23:59:59')
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output
