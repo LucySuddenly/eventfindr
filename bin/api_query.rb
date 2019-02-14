@@ -18,15 +18,13 @@ def display_output_with_date
   puts
 end
 
-def get_detailed_info
-  puts "Select the number of an event for more information."
-  input = get_user_input
+def retrieve_user_selection
+  input = event_information_select_prompt
   Event.all[input.to_i - 1]
 end
 
-def get_detailed_info_for_presales
-  puts "Select the number of an event for onsale information."
-  input = get_user_input
+def retrieve_user_selection_for_presales
+  input = onsale_information_select_prompt
   Event.all[input.to_i - 1]
 end
 
@@ -46,7 +44,7 @@ def check_if_no_results(response_hash)
   end
 end
 
-def attraction_name_rescue(event_hash)
+def return_name_or_handle_error(event_hash)
   begin
     event_hash["_embedded"]["attractions"][0]["name"]
   rescue NoMethodError
@@ -54,7 +52,7 @@ def attraction_name_rescue(event_hash)
   end
 end
 
-def attraction_genre_rescue(event_hash)
+def return_genre_or_handle_error(event_hash)
   begin
     event_hash["_embedded"]["attractions"][0]["classifications"][0]["genre"]["name"]
   rescue NoMethodError
@@ -62,8 +60,7 @@ def attraction_genre_rescue(event_hash)
   end
 end
 
-def assuring_venue_is_unique(event_hash)
-  #check to see if DB contains venue, else create it
+def check_if_db_contains_venue_else_create_it(event_hash)
   begin
     if Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
       Venue.find_by(:name => event_hash["_embedded"]["venues"][0]["name"])
@@ -75,8 +72,7 @@ def assuring_venue_is_unique(event_hash)
   end
 end
 
-def assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
-  #check to see if DB contains attraction, else create it
+def check_if_db_contains_attraction_else_create_it(event_hash, attraction_name, attraction_genre)
   begin
     if Attraction.find_by(:name => attraction_name)
       Attraction.find_by(:name => attraction_name)
@@ -108,21 +104,21 @@ def fix_time(time)
   end
 end
 
-def assign_relationships(a, b, c)
-  c.venue = a
-  c.attraction = b
-  c.save
+def assign_relationships(venue, attraction, event)
+  event.venue = venue
+  event.attraction = attraction
+  event.save
 end
 
 def convert_json_data_to_ruby_objects(response_hash)
   check_if_no_results(response_hash)
   response_hash["_embedded"]["events"].each do |event_hash|
-    attraction_name = attraction_name_rescue(event_hash)
-    attraction_genre = attraction_genre_rescue(event_hash)
-    a = assuring_venue_is_unique(event_hash)
-    b = assuring_attraction_is_unique(event_hash, attraction_name, attraction_genre)
-    c = create_event(event_hash)
-    assign_relationships(a, b ,c)
+    attraction_name = return_name_or_handle_error(event_hash)
+    attraction_genre = return_genre_or_handle_error(event_hash)
+    venue = check_if_db_contains_venue_else_create_it(event_hash)
+    attraction = check_if_db_contains_attraction_else_create_it(event_hash, attraction_name, attraction_genre)
+    event = create_event(event_hash)
+    assign_relationships(venue, attraction, event)
   end
 end
 
@@ -131,7 +127,7 @@ def get_events_for_city_and_date(city, date)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output
-  event = get_detailed_info
+  event = retrieve_user_selection
   event_info(event)
 end
 
@@ -140,7 +136,7 @@ def get_events_for_artist_and_city(artist, city)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
-  event = get_detailed_info
+  event = retrieve_user_selection
   event_info(event)
 end
 
@@ -149,11 +145,11 @@ def onsale_soon_by_city(city)
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)
   display_output_with_date
-  event = get_detailed_info_for_presales
+  event = retrieve_user_selection_for_presales
   event_info(event)
 end
 
-def im_feeling_lucky_tonight(city)
+def choose_a_random_event(city)
   response_string = RestClient.get('https://app.ticketmaster.com/discovery/v2/events.json?apikey='+ $key + '&city=' + city + '&size=25&localStartDateTime=' + DateTime.now.to_s[0..9] + 'T00:00:00,' + DateTime.now.to_s[0..9] + 'T23:59:59&sort=random')
   response_hash = JSON.parse(response_string)
   convert_json_data_to_ruby_objects(response_hash)

@@ -50,7 +50,7 @@ class CLI
     elsif input == '4'
       puts "In which city are you located?"
       city = get_user_input
-      im_feeling_lucky_tonight(city)
+      choose_a_random_event(city)
     elsif input == '5'
     exit
     else
@@ -88,6 +88,16 @@ class CLI
       gets
       self.event_info(event)
     end
+  end
+
+  def event_information_select_prompt
+    puts "Select the number of an event for more information."
+    get_user_input
+  end
+
+  def onsale_information_select_prompt
+    puts "Select the number of an event for onsale information."
+    get_user_input
   end
 
 
