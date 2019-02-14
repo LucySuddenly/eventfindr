@@ -1,7 +1,20 @@
-# CLI Starter Scaffold
+# EventFindr
 
-Hello and welcome to the makings of your Ruby CLI!
+EventFindr is a simple CLI used to find live entertainment events.
 
-We've provided you with the basic setup for a CLI using ActiveRecord. That means your basic gems and rake tasks are included in your Gemfile and Rakefile, respectively. In addition, we've included some other useful tidbits, so please be sure to take a tour of all the files and read all the comments we've left for you!
+## Installation
 
-Play around! Poke around! The world is your oyster!
+Run 'bundle install' to install required gems.
+
+```bash
+bundle install
+```
+
+Create a file named 'api_key.rb' in the 'config' folder. Obtain an api key from ticketmaster [here](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/). Once api key is obtained, assign the key to the global variable '$key' as a string in the 'api_key.rb' file.
+
+
+## Contributing
+Contributions are welcome. Feel free to open a pull request or branch from this project. 
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
