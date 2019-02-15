@@ -19,7 +19,12 @@ class CLI
     Venue.destroy_all
     Attraction.destroy_all
     puts
-    puts "EVENTFINDR"
+    puts " ______               _   ______ _           _"
+    puts "|  ____|             | | |  ____(_)         | |"
+    puts "| |____   _____ _ __ | |_| |__   _ _ __   __| |_ __"
+    puts "|  __\\ \\ / / _ \\ '_ \\| __|  __| | | '_ \\ / _` | '__|"
+    puts "| |____ V /  __/ | | | |_| |    | | | | | (_| | |"
+    puts "|______\\_/ \\___|_| |_|\\__|_|    |_|_| |_|\\__,_|_|"
     puts
     puts "Available Search Options"
     puts "-----------------------------------------"
