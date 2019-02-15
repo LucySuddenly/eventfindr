@@ -2,6 +2,8 @@
 
 EventFindr is a simple CLI used to find live entertainment events.
 
+[Here's our demo video](https://www.youtube.com/watch?v=hiRDU-swJhw)
+
 ## Installation
 
 Run 'bundle install' to install required gems.
